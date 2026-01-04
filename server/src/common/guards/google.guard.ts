@@ -1,4 +1,4 @@
-import { Injectable, type ExecutionContext } from '@nestjs/common'
+import { Injectable, UnauthorizedException, type ExecutionContext } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
 import type { User } from '@type/auth/user.d.ts'
 
@@ -13,14 +13,9 @@ export class GoogleAuthGuard extends AuthGuard('google') {
             prompt: 'select_account'
         }
     }
-    override handleRequest<T extends object = User | { message: string }>(err: Error, result: T, _: never, context: ExecutionContext): T | undefined | never {
-        const http = context.switchToHttp()
-        const req = http.getRequest()
-        if (err) throw err
-        if ('message' in result) {
-            req.message = result.message
-            return
-        }
-        return result
+    override handleRequest<T = User>(err: Error, user: T, _: never, __: ExecutionContext): T | undefined | never {
+        if (err) console.log('[Err]: ', err)
+        if (!user) throw new UnauthorizedException()
+        return user
     }
 }

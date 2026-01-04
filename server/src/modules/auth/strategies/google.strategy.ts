@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, UnauthorizedException } from '@nestjs/common'
 import { PassportStrategy } from '@nestjs/passport'
 import { Strategy, type Profile } from 'passport-google-oauth20'
 import { PrismaService } from '@infrastructure/database/prisma.service.js'
@@ -49,8 +49,9 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
             })
             return user
         } if (state === 'login') {
+            console.log('aa')
             const user = await this.prismaService.user.findFirst({ where: { googleId } })
-            if (!user) return { message: 'Google account is not registered! Try registering it with Google!' }
+            if (!user) throw new UnauthorizedException('Google account is not registered! Try registering it with Google!')
             return user
         } if (state === 'connect') {
             const rt = req.cookies['!']

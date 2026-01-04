@@ -12,6 +12,6 @@ export class AuthGuard extends PassportAuthGuard('opaque') {
     }
     override handleRequest<T = User>(_: never, user: T): T | never {
         if (!user) throw { code: ERROR.UNAUTHENTICATED }
-        return user as T
+        return user
     }
 }
