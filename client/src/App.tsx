@@ -94,7 +94,7 @@ const App: FC = () => {
                         <Route path='/collection' element={<Collection search={search} />} />
                         <Route path='/collection/:page' element={<Collection search={search} />} />
                         <Route path='/collection/:query/:page' element={<Collection search={search} />} />
-                        <Route path='/API' element={<API />} />
+                        {/* <Route path='/API' element={<API />} /> */}
                         <Route path='/settings' element={<Settings isUser={user} />} />
                     </Route>
                     <Route path='*' element={<NotFound />} />

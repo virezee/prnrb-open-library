@@ -53,7 +53,7 @@ const Navbar: FC<NavbarProps> = ({ isUser, onSearch }) => {
                     <div className="flex flex-wrap space-x-4">
                         <Link to="" className={`${active === 'home' ? 'text-gray-500' : 'hover:text-gray-500'} mr-4`} onClick={() => dispatch(setActive('home'))}>Home</Link>
                         <Link to="collection" className={`${active === 'col' ? 'text-gray-500' : 'hover:text-gray-500'} mr-4`} onClick={() => dispatch(setActive('col'))}>Collection</Link>
-                        <Link to="API" className={`${active === 'api' ? 'text-gray-500' : 'hover:text-gray-500'}`} onClick={() => dispatch(setActive('api'))}>API</Link>
+                        {/* <Link to="API" className={`${active === 'api' ? 'text-gray-500' : 'hover:text-gray-500'}`} onClick={() => dispatch(setActive('api'))}>API</Link> */}
                     </div>
                 ) : (
                     <Link to="" className='text-gray-500'>Home</Link>
