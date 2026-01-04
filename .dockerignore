@@ -1,0 +1,13 @@
+**/node_modules
+**/.env
+**/dist
+**/migrations
+**/generated
+**/*.tsbuildinfo
+**/Dockerfile*
+**/compose.yaml
+**/.dockerignore
+**/.git
+**/.gitignore
+README.md
+LICENSE
