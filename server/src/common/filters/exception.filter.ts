@@ -3,7 +3,7 @@ import type { ExceptionFilter, ArgumentsHost } from '@nestjs/common'
 import type { GqlExceptionFilter } from '@nestjs/graphql'
 import { GraphQLError } from 'graphql'
 
-@Catch(GraphQLError)
+@Catch()
 export class GraphqlFilter implements GqlExceptionFilter {
     catch(exception: { message?: string, code: string, errors?: Record<string, string> | string } | Error): never {
         if (typeof exception === 'object' && 'code' in exception) {

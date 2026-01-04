@@ -10,7 +10,7 @@ export class GenerateService {
         private readonly prismaService: PrismaService,
         private readonly redisService: RedisService,
         private readonly securityService: SecurityService
-    ) { }
+    ) {}
     async generate(user: User): Promise<string> {
         const key = this.securityService.sanitizeRedisKey('user', user.id)
         let apiKey: string

@@ -46,12 +46,18 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
                 }
             })
             ;(user as any).identity = identity
-            return user
+            const key = `user${user.id}`
+            await this.redisService.redis.json.SET(key, '$', this.formatterService.formatUser(user))
+            await this.redisService.redis.EXPIRE(key, 60 * 60 * 24 * 30)
+            return this.formatterService.formatUser(user)
         } if (action === 'login') {
             const user = await this.prismaService.user.findFirst({ where: { googleId } })
             if (!user) throw new BadRequestException('Google account is not registered! Try registering it with Google!')
             ;(user as any).identity = identity
-            return user
+            const key = `user${user.id}`
+            await this.redisService.redis.json.SET(key, '$', this.formatterService.formatUser(user))
+            await this.redisService.redis.EXPIRE(key, 60 * 60 * 24 * 30)
+            return this.formatterService.formatUser(user)
         } if (action === 'connect') {
             const rt = req.cookies['!']
             if (!rt) throw new UnauthorizedException(ERROR.UNAUTHENTICATED)
