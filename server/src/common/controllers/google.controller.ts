@@ -27,6 +27,7 @@ export class GoogleController {
             identity,
             id
         )
+        res.clearCookie('pkce')
         return res.send(`
             <script>
                 window.opener.postMessage({ message: '' }, 'http://${process.env['DOMAIN']}:${process.env['CLIENT_PORT']}')
