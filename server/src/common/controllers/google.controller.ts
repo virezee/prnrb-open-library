@@ -1,6 +1,7 @@
 import { Controller, Get, Req, Res, UseGuards } from '@nestjs/common'
 import { GoogleAuthGuard } from '@common/guards/google.guard.js'
 import { VerificationService } from '@modules/auth/services/verification.service.js'
+import { GoogleCallbackGuard } from '@common/guards/google-callback.guard.js'
 
 @Controller('auth/google')
 export class GoogleController {
@@ -15,7 +16,7 @@ export class GoogleController {
     @UseGuards(GoogleAuthGuard)
     ___(): void {}
     @Get('callback')
-    @UseGuards(GoogleAuthGuard)
+    @UseGuards(GoogleCallbackGuard)
     async ____(@Req() req: Req, @Res() res: Res) {
         const user = req.user
         const identity = user.identity
