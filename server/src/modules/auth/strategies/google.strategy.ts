@@ -48,6 +48,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
             })
             return user
         } if (state === 'login') {
+            console.log('tes')
             const user = await this.prismaService.user.findFirst({ where: { googleId } })
             if (!user) return { message: 'Google account is not registered! Try registering it with Google!' }
             return user

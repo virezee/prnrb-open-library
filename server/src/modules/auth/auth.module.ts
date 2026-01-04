@@ -1,9 +1,11 @@
 import { Module } from '@nestjs/common'
 import { AuthController } from '@common/controllers/auth.controller.js'
+import { GoogleController } from '@common/controllers/google.controller.js'
 import { VerifyController } from '@common/controllers/verify.controller.js'
 import { EmailModule } from '@infrastructure/email/email.module.js'
 import { UtilModule } from '@shared/utils/util.module.js'
 import { OpaqueStrategy } from './strategies/opaque.strategy.js'
+import { GoogleStrategy } from './strategies/google.strategy.js'
 import { RegisterInterceptor } from '@common/interceptors/auth/register.interceptor.js'
 import { RegisterPipe } from '@common/pipes/auth/register.pipe.js'
 import { LoginInterceptor } from '@common/interceptors/auth/login.interceptor.js'
@@ -27,10 +29,11 @@ import { ResetService } from './services/reset.service.js'
 import { TerminateService } from './services/terminate.service.js'
 
 @Module({
-    controllers: [AuthController, VerifyController],
+    controllers: [AuthController, GoogleController, VerifyController],
     imports: [EmailModule, UtilModule],
     providers: [
         OpaqueStrategy,
+        GoogleStrategy,
         RegisterInterceptor,
         RegisterPipe,
         LoginInterceptor,

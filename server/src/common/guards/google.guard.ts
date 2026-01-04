@@ -1,6 +1,6 @@
 import { Injectable, type ExecutionContext } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
-import type { User } from '@type/auth/user.js'
+import type { User } from '@type/auth/user.d.ts'
 
 @Injectable()
 export class GoogleAuthGuard extends AuthGuard('google') {

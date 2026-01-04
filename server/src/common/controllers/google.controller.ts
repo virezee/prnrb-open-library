@@ -15,6 +15,7 @@ export class GoogleController {
     @UseGuards(GoogleAuthGuard)
     ___(): void {}
     @Get('callback')
+    @UseGuards(GoogleAuthGuard)
     async ____(@Req() req: Req, @Res() res: Res) {
         const user = req.user
         const message = req.message ?? ''
