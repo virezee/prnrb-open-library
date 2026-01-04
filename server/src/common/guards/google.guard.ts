@@ -7,10 +7,11 @@ export class GoogleAuthGuard extends AuthGuard('google') {
     override getAuthenticateOptions(context: ExecutionContext): { scope: ['profile', 'email'], state: string, prompt: string } {
         const req = context.switchToHttp().getRequest()
         const action = req.path.split('/').pop()
-        const identity = req.query.identity ?? null
-        const state = Buffer.from(
-            JSON.stringify({ action, identity })
-        ).toString('base64')
+        const identity = req.query.identity
+        const state = JSON.stringify({
+            action: action,
+            identity: identity
+        })
         return {
             scope: ['profile', 'email'],
             state,
