@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common'
+import { Injectable, BadRequestException, UnauthorizedException } from '@nestjs/common'
 import { PassportStrategy } from '@nestjs/passport'
 import { Strategy, type Profile } from 'passport-google-oauth20'
 import { PrismaService } from '@infrastructure/database/prisma.service.js'
@@ -32,10 +32,9 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
         const name = [profile.name?.givenName, profile.name?.familyName].filter(Boolean).join(' ')
         const email = profile.emails![0]!.value
         const state = req.query['state']
-        console.log(state)
         if (state === 'register') {
             const exist = await this.prismaService.user.findFirst({ where: { googleId } })
-            if (exist) return { message: 'Google account is already registered! Try logging in with Google!' }
+            if (exist) throw new BadRequestException('Google account is already registered! Try logging in with Google!')
             const user = await this.prismaService.user.create({
                 data: {
                     googleId,
@@ -49,23 +48,22 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
             })
             return user
         } if (state === 'login') {
-            console.log('aa')
             const user = await this.prismaService.user.findFirst({ where: { googleId } })
-            if (!user) throw new UnauthorizedException('Google account is not registered! Try registering it with Google!')
+            if (!user) throw new BadRequestException('Google account is not registered! Try registering it with Google!')
             return user
         } if (state === 'connect') {
             const rt = req.cookies['!']
-            if (!rt) throw new Error(ERROR.UNAUTHENTICATED)
+            if (!rt) throw new UnauthorizedException(ERROR.UNAUTHENTICATED)
             const refreshKey = this.securityService.sanitizeRedisKey('refresh', rt)
             const session = await this.redisService.redis.HGETALL(refreshKey)
-            if (!session) throw new Error(ERROR.UNAUTHENTICATED)
+            if (!session) throw new UnauthorizedException(ERROR.UNAUTHENTICATED)
             const user = await this.prismaService.user.findUnique({ where: { id: session['id']! } })
-            if (!user) throw new Error(ERROR.UNAUTHENTICATED)
+            if (!user) throw new UnauthorizedException(ERROR.UNAUTHENTICATED)
             let data: Record<string, string | null> = {}
             if (!user.googleId) data['googleId'] = googleId
-            else if (user.googleId !== googleId) return { message: 'The selected Google account does not match the one connected to your profile!' }
+            else if (user.googleId !== googleId) throw new BadRequestException('The selected Google account does not match the one connected to your profile!')
             else {
-                if (!user.pass) return { message: 'Set a password before disconnecting your account from Google!' }
+                if (!user.pass) throw new BadRequestException('Set a password before disconnecting your account from Google!')
                 data['googleId'] = null
             }
             const updated = await this.prismaService.user.update({

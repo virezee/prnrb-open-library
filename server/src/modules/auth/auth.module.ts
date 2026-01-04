@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common'
-import { PassportModule } from '@nestjs/passport'
 import { AuthController } from '@common/controllers/auth.controller.js'
 import { GoogleController } from '@common/controllers/google.controller.js'
 import { VerifyController } from '@common/controllers/verify.controller.js'
@@ -31,13 +30,7 @@ import { TerminateService } from './services/terminate.service.js'
 
 @Module({
     controllers: [AuthController, GoogleController, VerifyController],
-    imports: [
-        PassportModule.register({
-            session: false
-        }),
-        EmailModule,
-        UtilModule
-    ],
+    imports: [EmailModule, UtilModule],
     providers: [
         OpaqueStrategy,
         GoogleStrategy,
