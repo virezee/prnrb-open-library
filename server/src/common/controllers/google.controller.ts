@@ -4,16 +4,16 @@ import { VerificationService } from '@modules/auth/services/verification.service
 
 @Controller('auth/google')
 export class GoogleController {
-    constructor(private readonly verificationService: VerificationService) {}
+    constructor(private readonly verificationService: VerificationService) { }
     @Get('register')
     @UseGuards(GoogleAuthGuard)
-    _(): void {}
+    _(): void { }
     @Get('login')
     @UseGuards(GoogleAuthGuard)
-    __(): void {}
+    __(): void { }
     @Get('connect')
     @UseGuards(GoogleAuthGuard)
-    ___(): void {}
+    ___(): void { }
     @Get('callback')
     @UseGuards(GoogleAuthGuard)
     async ____(@Req() req: Req, @Res() res: Res) {
@@ -27,10 +27,12 @@ export class GoogleController {
                 </script>
             `)
         }
+        const raw = req.query['identity'] as string
+        const identity = raw ? JSON.parse(Buffer.from(raw, 'base64').toString()) : null
         await this.verificationService.generateToken(
             req,
             res,
-            user.identity,
+            identity,
             user.id
         )
         return res.send(`

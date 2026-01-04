@@ -55,7 +55,16 @@ const Login: FC = () => {
         const height = 600
         const left = window.screenX + (window.outerWidth - width) / 2
         const top = window.screenY + (window.outerHeight - height) / 2
-        window.open(`http://${import.meta.env['VITE_DOMAIN']}:${import.meta.env['VITE_SERVER_PORT']}/auth/google/login`, '_blank', `width=${width},height=${height},left=${left},top=${top}`)
+        const identity = {
+            tz: Intl.DateTimeFormat().resolvedOptions().timeZone || '',
+            screenRes: `${window.screen.width}x${window.screen.height}`,
+            colorDepth: String(window.screen.colorDepth),
+            devicePixelRatio: String(window.devicePixelRatio || 1),
+            touchSupport: ('ontouchstart' in window).toString(),
+            hardwareConcurrency: String(navigator.hardwareConcurrency || '')
+        }
+        const encoded = encodeURIComponent(btoa(JSON.stringify(identity)))
+        window.open(`http://${import.meta.env['VITE_DOMAIN']}:${import.meta.env['VITE_SERVER_PORT']}/auth/google/login?identity=${encoded}`, '_blank', `width=${width},height=${height},left=${left},top=${top}`)
     }
     return (
         <div className="bg-black flex justify-center items-center h-screen">

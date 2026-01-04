@@ -32,6 +32,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
         const name = [profile.name?.givenName, profile.name?.familyName].filter(Boolean).join(' ')
         const email = profile.emails![0]!.value
         const state = req.query['state']
+        console.log(state)
         if (state === 'register') {
             const exist = await this.prismaService.user.findFirst({ where: { googleId } })
             if (exist) return { message: 'Google account is already registered! Try logging in with Google!' }

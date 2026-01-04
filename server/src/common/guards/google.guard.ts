@@ -13,22 +13,13 @@ export class GoogleAuthGuard extends AuthGuard('google') {
             prompt: 'select_account'
         }
     }
-    override handleRequest<T extends object = User | { message: string }>(err: Error, result: T, context: ExecutionContext): T | null | never {
+    override handleRequest<T extends object = User | { message: string }>(err: Error, result: T, _: never, context: ExecutionContext): T | undefined | never {
         const http = context.switchToHttp()
         const req = http.getRequest()
-        const res = http.getResponse()
-        if (err) {
-            res.send(`
-                <script>
-                    window.opener.postMessage({ message: '${err}' }, 'http://${process.env['DOMAIN']}:${process.env['CLIENT_PORT']}')
-                    window.close()
-                </script>
-            `)
-            return null
-        }
+        if (err) throw err
         if ('message' in result) {
             req.message = result.message
-            return null
+            return
         }
         return result
     }
