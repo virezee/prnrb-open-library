@@ -31,7 +31,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
         const name = [profile.name?.givenName, profile.name?.familyName].filter(Boolean).join(' ')
         const email = profile.emails![0]!.value
         const { action, identity: identityB64 } = JSON.parse(req.query['state'] as string)
-        const identity = JSON.parse(Buffer.from(identityB64, 'base64').toString())
+        const identity = identityB64 ? JSON.parse(Buffer.from(identityB64, 'base64').toString()) : null
         if (action === 'register') {
             const exist = await this.prismaService.user.findFirst({ where: { googleId } })
             if (exist) throw new BadRequestException('Google account is already registered! Try logging in with Google!')
