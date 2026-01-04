@@ -24,7 +24,8 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
             callbackURL: `http://${process.env['DOMAIN']}:${process.env['PORT']}/auth/google/callback`,
             scope: ['profile', 'email'],
             passReqToCallback: true,
-            pkce: true
+            pkce: true,
+            state: true
         })
     }
     async validate(req: Req, _: never, __: never, profile: Profile): Promise<any> {
