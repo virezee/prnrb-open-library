@@ -1,6 +1,7 @@
 FROM oven/bun:1.3.5-alpine
 WORKDIR /prnrb-open-library-backend
 COPY package.json bun.lock ./
+COPY src/infrastructure/prisma/schema.prisma src/infrastructure/prisma/schema.prisma
 RUN bun i
 RUN bunx prisma generate
 RUN bunx prisma migrate dev --name init
