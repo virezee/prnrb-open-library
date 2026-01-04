@@ -24,7 +24,7 @@ export class GoogleController {
             req,
             res,
             identity,
-            userId,
+            userId
         )
         return res.send(`
             <script>
