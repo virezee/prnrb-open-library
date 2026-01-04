@@ -1,0 +1,32 @@
+services:
+  redis:
+    image: redis/redis-stack:latest
+    container_name: prnrb-open-library-redis
+    restart: unless-stopped
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: prnrb-open-library-mailpit
+    restart: unless-stopped
+    ports:
+      - 8025:8025
+  server:
+    build: ./server
+    image: virezee/prnrb-open-library-nestjs:latest
+    container_name: prnrb-open-library-nestjs
+    restart: unless-stopped
+    ports:
+      - 3001:3001
+    depends_on:
+      - redis
+      - mailpit
+  client:
+    build: ./client
+    image: virezee/prnrb-open-library-react:latest
+    container_name: prnrb-open-library-react
+    restart: unless-stopped
+    ports:
+      - 3000:3000
+    depends_on:
+      - redis
+      - mailpit
+      - server
