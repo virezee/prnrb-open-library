@@ -21,7 +21,7 @@ export class GoogleController {
         const identity = user.identity
         const { action } = JSON.parse(req.query['state'] as string)
         const id = user.id
-        if (action === 'login' || action === 'register') await this.verificationService.generateToken(
+        if (action === 'register' || action === 'login') await this.verificationService.generateToken(
             req,
             res,
             identity,
