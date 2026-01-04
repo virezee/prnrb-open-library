@@ -10,8 +10,7 @@ export class AuthGuard extends PassportAuthGuard('opaque') {
         const ctx = GqlExecutionContext.create(context)
         return ctx.getContext().req
     }
-    override handleRequest<T = User>(err: Error, user: User): T | never {
-        if (err) throw err
+    override handleRequest<T = User>(_: never, user: T): T | never {
         if (!user) throw { code: ERROR.UNAUTHENTICATED }
         return user as T
     }

@@ -34,7 +34,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
         const state = req.query['state']
         if (state === 'register') {
             const exist = await this.prismaService.user.findFirst({ where: { googleId } })
-            if (exist) throw { message: 'Google account is already registered! Try logging in with Google!', code: ERROR.OAUTH_ACCOUNT_ALREADY_REGISTERED }
+            if (exist) return { message: 'Google account is already registered! Try logging in with Google!' }
             const user = await this.prismaService.user.create({
                 data: {
                     googleId,
@@ -49,21 +49,21 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
             return user
         } if (state === 'login') {
             const user = await this.prismaService.user.findFirst({ where: { googleId } })
-            if (!user) throw { message: 'Google account is not registered! Try registering it with Google!', code: ERROR.OAUTH_ACCOUNT_NOT_REGISTERED }
+            if (!user) return { message: 'Google account is not registered! Try registering it with Google!' }
             return user
         } if (state === 'connect') {
             const rt = req.cookies['!']
-            if (!rt) throw { code: ERROR.UNAUTHENTICATED }
+            if (!rt) throw new Error(ERROR.UNAUTHENTICATED)
             const refreshKey = this.securityService.sanitizeRedisKey('refresh', rt)
             const session = await this.redisService.redis.HGETALL(refreshKey)
-            if (!session) throw { code: ERROR.UNAUTHENTICATED }
+            if (!session) throw new Error(ERROR.UNAUTHENTICATED)
             const user = await this.prismaService.user.findUnique({ where: { id: session['id']! } })
-            if (!user) throw { code: ERROR.UNAUTHENTICATED }
+            if (!user) throw new Error(ERROR.UNAUTHENTICATED)
             let data: Record<string, string | null> = {}
             if (!user.googleId) data['googleId'] = googleId
-            else if (user.googleId !== googleId) throw { message: 'The selected Google account does not match the one connected to your profile!', code: ERROR.OAUTH_ACCOUNT_MISMATCH }
+            else if (user.googleId !== googleId) return { message: 'The selected Google account does not match the one connected to your profile!' }
             else {
-                if (!user.pass) throw { message: 'Set a password before disconnecting your account from Google!', code: ERROR.PASSWORD_REQUIRED }
+                if (!user.pass) return { message: 'Set a password before disconnecting your account from Google!' }
                 data['googleId'] = null
             }
             const updated = await this.prismaService.user.update({

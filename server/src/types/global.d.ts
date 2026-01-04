@@ -5,6 +5,7 @@ import type { User as U } from './auth/user.d.ts'
 declare global {
     type Req = Request & {
         user: User
+        message?: string
     }
     type Res = Response
     type ReqRes = { req: Req, res: Res }

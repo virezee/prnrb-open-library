@@ -15,18 +15,11 @@ export class GoogleController {
     @Get('callback')
     async ____(@Req() req: Req, @Res() res: Res) {
         const user = req.user
+        const message = req.message ?? ''
         if (!user) {
             return res.send(`
                 <script>
-                    window.opener.postMessage({ message: '${info.message}' }, 'http://${process.env['DOMAIN']}:${process.env['CLIENT_PORT']}')
-                    window.close()
-                </script>
-            `)
-        }
-        if (err) {
-            return res.send(`
-                <script>
-                    window.opener.postMessage({ message: '${err}' }, 'http://${process.env['DOMAIN']}:${process.env['CLIENT_PORT']}')
+                    window.opener.postMessage({ message: '${message}' }, 'http://${process.env['DOMAIN']}:${process.env['CLIENT_PORT']}')
                     window.close()
                 </script>
             `)
