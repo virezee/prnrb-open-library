@@ -1,7 +1,7 @@
 import { Controller, Get, Req, Res, UseGuards } from '@nestjs/common'
 import { GoogleAuthGuard } from '@common/guards/google.guard.js'
-import { VerificationService } from '@modules/auth/services/verification.service.js'
 import { GoogleCallbackGuard } from '@common/guards/google-callback.guard.js'
+import { VerificationService } from '@modules/auth/services/verification.service.js'
 
 @Controller('auth/google')
 export class GoogleController {
@@ -28,7 +28,7 @@ export class GoogleController {
             identity,
             id
         )
-        res.clearCookie('pkce')
+        // res.clearCookie('pkce')
         return res.send(`
             <script>
                 window.opener.postMessage({ message: '' }, 'http://${process.env['DOMAIN']}:${process.env['CLIENT_PORT']}')
