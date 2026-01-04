@@ -73,7 +73,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
                 data
             })
             await this.retryService.retry(() => this.redisService.redis.json.SET(`user:${user.id}`, '$.google', !!updated.googleId), {})
-            return this.formatterService.formatUser(updated)
+            return updated
         }
         return
     }
