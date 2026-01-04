@@ -8,7 +8,6 @@ import { SecurityService } from '@shared/utils/services/security.service.js'
 import { FormatterService } from '@shared/utils/services/formatter.service.js'
 import { MiscService } from '@shared/utils/services/misc.service.js'
 import ERROR from '@common/constants/error.constant.js'
-
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     constructor(
@@ -31,8 +30,8 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
         const googleId = profile.id
         const name = [profile.name?.givenName, profile.name?.familyName].filter(Boolean).join(' ')
         const email = profile.emails![0]!.value
-        const state = req.query['state']
-        if (state === 'register') {
+        const { action, identity } = JSON.parse(Buffer.from(req.query['state'] as string, 'base64').toString())
+        if (action === 'register') {
             const exist = await this.prismaService.user.findFirst({ where: { googleId } })
             if (exist) throw new BadRequestException('Google account is already registered! Try logging in with Google!')
             const user = await this.prismaService.user.create({
@@ -46,12 +45,14 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
                     verified: true
                 }
             })
+            ;(user as any).identity = identity
             return user
-        } if (state === 'login') {
+        } if (action === 'login') {
             const user = await this.prismaService.user.findFirst({ where: { googleId } })
             if (!user) throw new BadRequestException('Google account is not registered! Try registering it with Google!')
+            ;(user as any).identity = identity
             return user
-        } if (state === 'connect') {
+        } if (action === 'connect') {
             const rt = req.cookies['!']
             if (!rt) throw new UnauthorizedException(ERROR.UNAUTHENTICATED)
             const refreshKey = this.securityService.sanitizeRedisKey('refresh', rt)

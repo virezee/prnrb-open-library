@@ -1,10 +1,10 @@
 import { Controller, Get, Req, Res, UseGuards } from '@nestjs/common'
 import { GoogleAuthGuard } from '@common/guards/google.guard.js'
-import { VerificationService } from '@modules/auth/services/verification.service.js'
+// import { VerificationService } from '@modules/auth/services/verification.service.js'
 
 @Controller('auth/google')
 export class GoogleController {
-    constructor(private readonly verificationService: VerificationService) { }
+    constructor(private readonly _____: VerificationService) { }
     @Get('register')
     @UseGuards(GoogleAuthGuard)
     _(): void { }
@@ -17,24 +17,6 @@ export class GoogleController {
     @Get('callback')
     @UseGuards(GoogleAuthGuard)
     async ____(@Req() req: Req, @Res() res: Res) {
-        const user = req.user
-        const message = req.message ?? ''
-        if (!user) {
-            return res.send(`
-                <script>
-                    window.opener.postMessage({ message: '${message}' }, 'http://${process.env['DOMAIN']}:${process.env['CLIENT_PORT']}')
-                    window.close()
-                </script>
-            `)
-        }
-        const raw = req.query['identity'] as string
-        const identity = raw ? JSON.parse(Buffer.from(raw, 'base64').toString()) : null
-        await this.verificationService.generateToken(
-            req,
-            res,
-            identity,
-            user.id
-        )
         return res.send(`
             <script>
                 window.opener.postMessage({ message: '' }, 'http://${process.env['DOMAIN']}:${process.env['CLIENT_PORT']}')

@@ -6,7 +6,11 @@ import type { User } from '@type/auth/user.d.ts'
 export class GoogleAuthGuard extends AuthGuard('google') {
     override getAuthenticateOptions(context: ExecutionContext): { scope: ['profile', 'email'], state: string, prompt: string } {
         const req = context.switchToHttp().getRequest()
-        const state = req.path.split('/').pop()
+        const action = req.path.split('/').pop()
+        const identity = req.query.identity ?? null
+        const state = Buffer.from(
+            JSON.stringify({ action, identity })
+        ).toString('base64')
         return {
             scope: ['profile', 'email'],
             state,
