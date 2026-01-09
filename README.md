@@ -1,4 +1,4 @@
-# **📚 MRERN Open Library**
+# **📚 PRNRB Open Library**
 An **Open Library System** powered by the **PRNRB Stack** (**PostgreSQL, Redis, NestJS, React, Bun**), fetching book data from the **Open Library API**.
 
 ---
